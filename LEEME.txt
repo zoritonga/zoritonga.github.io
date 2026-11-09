@@ -1,0 +1,47 @@
+SNOOPY VAPES MÉRIDA — CÓMO PUBLICAR EN NETLIFY
+
+CONTENIDO (no muevas nada de lugar):
+  index.html                      la tienda
+  admin.html                      el panel (se abre en tusitio.netlify.app/admin.html)
+  netlify/functions/products.mjs  el "servidor" que guarda el catálogo
+  package.json, netlify.toml      configuración
+
+OPCIÓN A: arrastrar la carpeta (sin GitHub)
+  1. Descomprime el ZIP. Quedará una carpeta con index.html adentro.
+  2. Entra a app.netlify.com con tu cuenta (tienes que estar con sesión iniciada).
+  3. Add new project → Deploy manually → arrastra la CARPETA completa.
+  4. Cuando termine, abre:  https://TU-SITIO.netlify.app/api/products
+     - Si ves algo como {"products":null,"updated":"0"}  → todo funciona.
+     - Si dice "Not found" → usa la OPCIÓN B.
+
+OPCIÓN B (recomendada): GitHub
+  1. Crea un repositorio en github.com y sube todos estos archivos (con sus carpetas).
+  2. En Netlify: Add new project → Import an existing project → GitHub → elige el repositorio → Deploy.
+
+USO DEL PANEL
+  Entra a /admin.html con tu contraseña de siempre. Edita nombre, precio, foto o disponibilidad:
+  se publica solo y la tienda se actualiza sin recargar (cada ~15 s).
+
+CAMBIAR LA CONTRASEÑA
+  Netlify → Site configuration → Environment variables → agrega ADMIN_PASSWORD con la nueva
+  contraseña → Deploys → Trigger deploy.
+
+CONECTAR GITHUB (respaldo + historial de cambios + sitio publicado desde GitHub)
+  Aclaración: lo que hace el tiempo real es el servidor de Netlify. GitHub guarda una copia
+  del catálogo (data/products.json) cada 5 minutos si hubo cambios, y es de donde Netlify publica el sitio.
+
+  1. En github.com crea un repositorio PRIVADO (ej. snoopy-vapes) y sube TODO el contenido de esta carpeta
+     (Add file → Upload files; arrastra index.html, admin.html, netlify.toml, package.json y la carpeta netlify).
+  2. En Netlify: Add new project → Import an existing project → GitHub → ese repositorio → Deploy.
+     (Si ya lo habías subido arrastrando, crea el sitio nuevo así; el catálogo guardado vive en cada sitio.)
+  3. Crea un token: GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens →
+     Generate new token → Repository access: "Only select repositories" → tu repositorio →
+     Permissions → Repository permissions → Contents: Read and write → Generate. Copia el token.
+  4. En Netlify → Site configuration → Environment variables, agrega:
+        GITHUB_TOKEN = (el token)
+        GITHUB_REPO  = tuusuario/snoopy-vapes
+        (opcional) GITHUB_BRANCH = main
+     Luego Deploys → Trigger deploy → Deploy site.
+  5. Edita algo en /admin.html. En ≤5 minutos aparece un commit "Actualización de catálogo" en tu repositorio.
+     En Netlify → Logs → Functions → mirror-github puedes ver si copió bien o si dio error.
+  NUNCA pegues el token en admin.html, index.html ni lo subas a GitHub: solo en las variables de Netlify.
