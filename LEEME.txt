@@ -1,0 +1,11 @@
+SNOOPY VAPES MÉRIDA - ARCHIVOS PARA GITHUB / NETLIFY
+
+En la RAÍZ del repositorio (primera pantalla de GitHub) deben estar:
+  index.html     la tienda
+  admin.html     el panel
+  package.json   configuración
+  netlify.toml   configuración
+  netlify/       carpeta con otra carpeta "functions" y dentro products.mjs
+
+El panel se abre en  https://TU-SITIO.netlify.app/admin.html
+(usa la dirección de NETLIFY, no la de github.io: el panel solo funciona en Netlify).
