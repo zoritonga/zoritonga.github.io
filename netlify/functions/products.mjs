@@ -18,12 +18,23 @@ function passOk(pw) {
   return a.length === b.length && timingSafeEqual(a, b);
 }
 const IMG = /^data:image\/(webp|png|jpeg|gif);base64,[A-Za-z0-9+/=]+$/;
+function cleanFlavors(arr) {
+  if (!Array.isArray(arr)) return [];
+  const seen = new Set(), out = [];
+  for (const s of arr.slice(0, 80)) {
+    const n = String((s && s.n) || "").replace(/\s+/g, " ").trim().slice(0, 30);
+    if (!n || seen.has(n.toLowerCase())) continue;
+    seen.add(n.toLowerCase()); out.push({ n, d: !(s && s.d === false) });
+    if (out.length >= 40) break;
+  }
+  return out;
+}
 function clean(list) {
   if (!Array.isArray(list) || list.length > 100) return null;
   const seen = new Set(), out = [];
   for (const p of list) {
     if (!p || typeof p !== "object") return null;
-    const id = String(p.id || "").slice(0, 60);
+    const id = String(p.id || "").replace(/[^\w-]/g, "").slice(0, 60);
     if (!id || seen.has(id)) return null;
     seen.add(id);
     out.push({
@@ -34,7 +45,8 @@ function clean(list) {
       precio: Math.max(0, Number(p.precio) || 0),
       puffs: Math.max(0, Number(p.puffs) || 0),
       imagen: typeof p.imagen === "string" && (p.imagen === "" || IMG.test(p.imagen)) ? p.imagen : "",
-      disponible: p.disponible !== false
+      disponible: p.disponible !== false,
+      sabores: cleanFlavors(p.sabores)
     });
   }
   return out;
